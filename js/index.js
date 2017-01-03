@@ -13,8 +13,12 @@ function showHidden() {
   $(".initially-hidden").removeClass("initially-hidden");
 }
 
+function getNextQuote() {
+  return $.getJSON("http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=jsonp&jsonp=?");
+}
+
 function updateQuote() {
-  $.getJSON("http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=jsonp&jsonp=?", function(json) {
+  getNextQuote().done(function(json) {
       var genColor = generateColorString();
       $("body").animate({
           backgroundColor: genColor
@@ -26,7 +30,8 @@ function updateQuote() {
           opacity: 0         
         }, fadeTime, function(){
           $('#text').html(json.quoteText);
-          $('#author').html(json.quoteAuthor);
+          var quoteAuthor = json.quoteAuthor ? json.quoteAuthor : "Unknown";
+          $('#author').html(quoteAuthor);
         }).animate({
           opacity: 1,
           color: genColor
